@@ -1,0 +1,93 @@
+.garfield {
+	width:600px;
+	height: 398px;
+}
+
+/*Top left image*/
+@media screen
+and (min-width: 1200px) {
+	.garfield {
+		width: 398px;
+		height: 128px;
+		background:url(garfield.gif) 0px 0px;
+	}
+}
+
+
+/*Top right image */
+@media screen
+and (min-width: 1100px)
+and (max-width: 1200px) {
+	.garfield {
+		width: 191px;
+		height: 124px;
+		background:url(garfield.gif) 200px 0px;
+	}
+}
+
+/*Second row, first image*/
+@media screen
+and (min-width: 1000px)
+and (max-width: 1100px) {
+	.garfield {
+		width: 193px;
+		height: 127px;
+		background:url(garfield.gif) 0px -134px;
+	}
+}
+
+/*Second row, second image*/
+@media screen
+and (min-width: 900px)
+and (max-width: 1000px) {
+	.garfield {
+		width: 193px;
+		height: 127px;
+		background:url(garfield.gif) 400px -134px;
+	}
+}
+
+/*Second row, third image*/
+@media screen
+and (min-width: 800px)
+and (max-width: 900px) {
+	.garfield {
+		width: 193px;
+		height: 127px;
+		background:url(garfield.gif) 200px -134px;
+	}
+}
+
+/*Third row, first image */
+@media screen
+and (min-width: 700px)
+and (max-width: 800px) {
+	.garfield {
+		width: 193px;
+		height: 127px;
+		background:url(garfield.gif) 0px -273px;
+	}
+}
+
+/*Third row, second image*/
+@media screen
+and (min-width: 600px)
+and (max-width: 700px) {
+	.garfield {
+		width: 193px;
+		height: 127px;
+		background:url(garfield.gif) 400px -273px;
+	}
+}
+
+/*Third row, third image*/
+@media screen
+and (max-width: 600px) {
+	.garfield {
+		width: 193px;
+		height: 127px;
+		background:url(garfield.gif) 200px -273px;
+	}
+}
+
+
