@@ -1,0 +1,27 @@
+#title {
+	text-align: center;
+	font-family: Helvetica;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#a_classic {
+	display: block;
+	margin: auto;
+	width: auto;
+	height: auto;
+}
+
+#lyrics {
+	text-align: center;
+	margin-top: 5px;
+}
+
+h2 {
+		text-align: center;
+		font-family: Helvetica;
+		font-size: 18px;
+		font-weight: bold;
+		margin-left: auto;
+		margin-right: auto;
+}
