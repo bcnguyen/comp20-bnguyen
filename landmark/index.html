@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<title>Historic Landmarks</title>
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<meta charset="utf-8">
+	<script src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
+
+	<script>
+		var username = "Hjivtdme";
+		var map;
+		var myLat = 0;
+		var myLong = 0;
+		var myLocation = new google.maps.LatLng(myLat, myLong);		
+		var myOptions = {
+			zoom: 13, 
+			center: myLocation,
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+		};
+		var request = new XMLHttpRequest();
+		var peopleData;
+		var landmarkData;
+		var marker;
+		var infowindow = new google.maps.InfoWindow();
+		var peopleIcon = "peopleicon.jpg";
+		var myIcon = "myicon.png";
+
+		//Initialize map
+		function initMap() {
+			map = new google.maps.Map(document.getElementById('map'), myOptions);
+			getMyLocation();
+		}
+
+		//Retrieves location
+		function getMyLocation() {
+			if (navigator.geolocation) { 				
+				navigator.geolocation.getCurrentPosition(function(position) {
+					myLat = position.coords.latitude;
+					myLong = position.coords.longitude;
+					manageRequest();
+				});
+			}
+			else {
+				alert("Geolocation is not supported by your web browser.");
+			}
+		}
+		function manageRequest() {
+			request.open("POST", "https://defense-in-derpth.herokuapp.com/sendLocation", true);
+			request.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); 
+			request.onreadystatechange = function() {
+				if (request.readyState == 4 && request.status == 200) {
+					data = request.responseText;
+					requestData = JSON.parse(data);
+					peopleData = requestData["people"];
+					landmarkData = requestData["landmarks"];
+					renderMap();
+				}
+				else if (request.readyState == 4 && request.status != 200) {
+					document.getElementById("location").innerHTML = "<p>Might be 404 or 500 error</p>";
+				}
+
+			}
+			request.send("login=" + username + "&lat=" + myLat + "&lng=" + myLong);
+		}
+		function renderMap() {
+			myLocation = new google.maps.LatLng(myLat, myLong);
+
+			//Create marker and info window for each person
+			for(i = 0; i < peopleData.length; i++) {
+				var peopleInfo;
+				peopleLocation = new google.maps.LatLng(peopleData[i]["lat"],peopleData[i]["lng"]);	
+				//Create marker for myself
+				if (peopleData[i]["login"] == username) {
+					createMarker(peopleLocation, myIcon)
+					peopleInfo = 
+				}
+				else {//Create marker for other people
+					createMarker(peopleLocation, peopleIcon)
+				}
+
+			}
+		}
+		
+		function createMarker(loc, image) {
+			marker = new google.maps.Marker({
+				position: loc,
+				map: map,
+				icon: image
+			});
+		}
+
+		function createWindow(info) {
+			google.maps.event.addListener(marker, 'click', function() {
+				infowindow.setContent(info);
+				infowindow.open(map, marker);
+			});
+		}
+
+	</script>
+</head>
+
+<body onload="initMap()">
+	<div id="map_canvas"></div>
+</body>
+
+
+</html>
