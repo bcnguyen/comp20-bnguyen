@@ -6,36 +6,34 @@
 	<title>Historic Landmarks</title>
 	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 	<meta charset="utf-8">
-	<script src="https://maps.google.com/maps/api/js"></script>
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
 	<link rel = "stylesheet" href = "style.css" type = "text/css"/>
 
 	<script>
 		var username = "Hjivtdme";
+		var peopleIcon = "peopleicon.png";
+		var myIcon = "troll.png";
+		var landmarkIcon = "landmarkIcon.png";
 		var map;
 		var myLat = 0;
 		var myLong = 0;
-		var request = new XMLHttpRequest();
-		var myLocation = new google.maps.LatLng(myLat, myLong);		
+		var myLocation = new google.maps.LatLng(myLat, myLong);	
 		var myOptions = {
 			zoom: 13, 
 			center: myLocation,
 			mapTypeId: google.maps.MapTypeId.ROADMAP
 		};		
+		var request = new XMLHttpRequest();
+		var infowindow = new google.maps.InfoWindow();
 		var peopleData;
 		var landmarkData;
-		var marker;
-		var infowindow = new google.maps.InfoWindow();
-		var peopleIcon = "peopleicon.jpg";
-		var myIcon = "myicon.png";
-		var landmarkIcon = "landmarkIcon.png";
 		var closestLandmarkDist = 1;
 		var closestLandmark;
-		var data;
 
 		//Initialize map
 		function initMap() {
 			map = new google.maps.Map(document.getElementById("map"), myOptions);
-			getMyLocation();
+			getMyLocation();	
 		}
 
 		//Retrieves location
@@ -51,6 +49,8 @@
 				alert("Geolocation is not supported by your web browser.");
 			}
 		}
+
+		//Make request and get data
 		function manageRequest() {
 			request.open("POST", "https://defense-in-derpth.herokuapp.com/sendLocation", true);
 			request.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); 
@@ -66,19 +66,16 @@
 				else if (request.readyState == 4 && request.status != 200) {
 					document.getElementById("location").innerHTML = "<p>Might be 404 or 500 error</p>";
 				}
-
 			}
 			request.send("login=" + username + "&lat=" + myLat + "&lng=" + myLong);
 		}
+
+		//Create map
 		function renderMap() {
-			//Creates marker for landmark within 1 mile radius
-			initLandmark();
-			//Make marker for each person
-			initMarker();
-			//pan to my location
-			map.panTo(myLocation);
-			//create polyline
-			createPolyline();
+			initLandmark();//Creates marker for landmark within 1 mile radius
+			initPeople();//Make marker for each person
+			map.panTo(myLocation);//pan to my location
+			createPolyline();//create polyline
 		}
 
 		//Create polyline
@@ -95,7 +92,7 @@
 			var line = new google.maps.Polyline({
 				path: coord,
 				geodesic: true,
-				strokeColor: '#FF0000',
+				strokeColor: '#ff00dc',
 				strokeOpacity: 1.0,
 				strokeWeight: 2
 			});
@@ -109,7 +106,6 @@
 				landmarkLoc = new google.maps.LatLng(landmarkData[i]["geometry"]["coordinates"][1],landmarkData[i]["geometry"]["coordinates"][0]);	
 				createMarker(landmarkLoc, landmarkIcon);
 				distance = calcDistance(landmarkData[i]["geometry"]["coordinates"][1],landmarkData[i]["geometry"]["coordinates"][0]);
-
 				var landmarkInfo = landmarkData[i]["properties"]["Details"];
 				createWindow(landmarkInfo);
 
@@ -120,24 +116,23 @@
 				}
 			}
 		}
+
 		//Create marker and window for each person
-		function initMarker() {			
-			
+		function initPeople() {			
 			for(i = 0; i < peopleData.length; i++) {
 				var peopleInfo;
 				peopleLocation = new google.maps.LatLng(peopleData[i]["lat"],peopleData[i]["lng"]);	
 
-				if (peopleData[i]["login"] != username) { //Create marker for myself
+				if (peopleData[i]["login"] != username) { //Create marker for other people
 					createMarker(peopleLocation, peopleIcon);
 					distance = calcDistance(peopleData[i]["lat"],peopleData[i]["lng"]);
-					peopleInfo = peopleData[i]["login"] + " is " + distance + " miles away";
+					peopleInfo = peopleData[i]["login"] + " is " + distance + " miles away.";
 					createWindow(peopleInfo);
 				}
-				else {//Create marker for other people
+				else {//Create marker for myself
 					myLocation = new google.maps.LatLng(myLat, myLong);
 					createMarker(myLocation, myIcon);
-					
-					contentPeople = username + " Nearest Historical Landmark: "+ closestLandmark["properties"]["Location_Name"] + " and dist is " + closestLandmarkDist + " miles";
+					peopleInfo = username + "<p>Nearest Historical Landmark: "+ closestLandmark["properties"]["Location_Name"] + "</p> <p>Distance: " + closestLandmarkDist + " miles </p>";
 					createWindow(peopleInfo);
 				}
 			}			
@@ -172,6 +167,7 @@
 			return d;
 		}
 
+		//Create marker
 		function createMarker(loc, image) {
 			marker = new google.maps.Marker({
 				position: loc,
@@ -180,6 +176,7 @@
 			});
 		}
 
+		//Create window 
 		function createWindow(info) {
 			google.maps.event.addListener(marker, 'click', function() {
 				infowindow.setContent(info);
