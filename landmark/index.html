@@ -32,7 +32,7 @@
 
 		//Initialize map
 		function initMap() {
-			map = new google.maps.Map(document.getElementById("map"), myOptions);
+			map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 			getMyLocation();	
 		}
 
@@ -67,7 +67,7 @@
 					document.getElementById("location").innerHTML = "<p>Might be 404 or 500 error</p>";
 				}
 			}
-			request.send("login=" + username + "&lat=" + myLat + "&lng=" + myLong);
+			request.send("login=" + username + "&lat=" + myLat + "&lng=" + myLong);//Check this
 		}
 
 		//Create map
@@ -104,10 +104,10 @@
 		function initLandmark() {			
 			for(i = 0; i < landmarkData.length; i++) {
 				landmarkLoc = new google.maps.LatLng(landmarkData[i]["geometry"]["coordinates"][1],landmarkData[i]["geometry"]["coordinates"][0]);	
-				createMarker(landmarkLoc, landmarkIcon);
+				
 				distance = calcDistance(landmarkData[i]["geometry"]["coordinates"][1],landmarkData[i]["geometry"]["coordinates"][0]);
 				var landmarkInfo = landmarkData[i]["properties"]["Details"];
-				createWindow(landmarkInfo);
+				createMarker(landmarkLoc, landmarkIcon, landmarkInfo);
 
 				//Get closest landmark
 				if (distance < closestLandmarkDist) {
@@ -124,16 +124,14 @@
 				peopleLocation = new google.maps.LatLng(peopleData[i]["lat"],peopleData[i]["lng"]);	
 
 				if (peopleData[i]["login"] != username) { //Create marker for other people
-					createMarker(peopleLocation, peopleIcon);
 					distance = calcDistance(peopleData[i]["lat"],peopleData[i]["lng"]);
 					peopleInfo = peopleData[i]["login"] + " is " + distance + " miles away.";
-					createWindow(peopleInfo);
+					createMarker(peopleLocation, peopleIcon, peopleInfo);
 				}
 				else {//Create marker for myself
 					myLocation = new google.maps.LatLng(myLat, myLong);
-					createMarker(myLocation, myIcon);
 					peopleInfo = username + "<p>Nearest Historical Landmark: "+ closestLandmark["properties"]["Location_Name"] + "</p> <p>Distance: " + closestLandmarkDist + " miles </p>";
-					createWindow(peopleInfo);
+					createMarker(myLocation, myIcon, peopleInfo);
 				}
 			}			
 		}
@@ -168,16 +166,12 @@
 		}
 
 		//Create marker
-		function createMarker(loc, image) {
-			marker = new google.maps.Marker({
+		function createMarker(loc, image, info) {
+			var marker = new google.maps.Marker({
 				position: loc,
 				map: map,
 				icon: image
 			});
-		}
-
-		//Create window 
-		function createWindow(info) {
 			google.maps.event.addListener(marker, 'click', function() {
 				infowindow.setContent(info);
 				infowindow.open(map, marker);
@@ -188,7 +182,7 @@
 </head>
 
 <body onload = "initMap()">
-	<div id="map"></div>
+	<div id="map_canvas"></div>
 </body>
 
 
