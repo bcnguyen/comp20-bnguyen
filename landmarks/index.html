@@ -67,7 +67,7 @@
 					document.getElementById("location").innerHTML = "<p>Might be 404 or 500 error</p>";
 				}
 			}
-			request.send("login=" + username + "&lat=" + myLat + "&lng=" + myLong);//Check this
+			request.send("login=" + username + "&lat=" + myLat + "&lng=" + myLong);
 		}
 
 		//Create map
@@ -100,24 +100,22 @@
 			line.setMap(map);
 		}
 
-		//Create marker and window for landmarks
+		//Create marker for landmarks
 		function initLandmark() {			
 			for(i = 0; i < landmarkData.length; i++) {
 				landmarkLoc = new google.maps.LatLng(landmarkData[i]["geometry"]["coordinates"][1],landmarkData[i]["geometry"]["coordinates"][0]);	
-				
 				distance = calcDistance(landmarkData[i]["geometry"]["coordinates"][1],landmarkData[i]["geometry"]["coordinates"][0]);
 				var landmarkInfo = landmarkData[i]["properties"]["Details"];
 				createMarker(landmarkLoc, landmarkIcon, landmarkInfo);
 
-				//Get closest landmark
-				if (distance < closestLandmarkDist) {
+				if (distance < closestLandmarkDist) {//Get closest landmark
 					closestLandmarkDist = distance;
 					closestLandmark = landmarkData[i];
 				}
 			}
 		}
 
-		//Create marker and window for each person
+		//Create marker for each person
 		function initPeople() {			
 			for(i = 0; i < peopleData.length; i++) {
 				var peopleInfo;
@@ -130,7 +128,7 @@
 				}
 				else {//Create marker for myself
 					myLocation = new google.maps.LatLng(myLat, myLong);
-					peopleInfo = username + "<p>Nearest Historical Landmark: "+ closestLandmark["properties"]["Location_Name"] + "</p> <p>Distance: " + closestLandmarkDist + " miles </p>";
+					peopleInfo = username + "<p>Nearest Historical Landmark: "+ closestLandmark["properties"]["Location_Name"] + "</p> <p>Distance away: " + closestLandmarkDist + " miles </p>";
 					createMarker(myLocation, myIcon, peopleInfo);
 				}
 			}			
@@ -184,6 +182,5 @@
 <body onload = "initMap()">
 	<div id="map_canvas"></div>
 </body>
-
 
 </html>
