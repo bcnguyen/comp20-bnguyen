@@ -16,8 +16,9 @@
         function store() {            
             var time = new Date();
             var txt = $('#msg').val(); 
-            localStorage.setItem(time, txt);
-            $("#msg").val(""); //reset text box          
+            localStorage[time] = txt;
+            $("#msg").val(""); //reset text box   
+            $("#log").html("");//reset text on screen       
             reload();
         }
 
