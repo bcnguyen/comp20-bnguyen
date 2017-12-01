@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Assignment 4</title>
+	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">	
+	<link href="style.css" rel="stylesheet"/>
+</head>
+
+<body>
+	<h2>Introduction</h2>
+	<p> The product is a server(https://blooming-scrubland-34098.herokuapp.com) that stores people's login and their location(latitude and longitude). When you send in your login, lat, and lng through a HTTP POST, you get back a list of all users who checked in and landmarks within a one mile radius. When you go to the server homepage(HTTP GET), there is a list of all of the checkins filtered by the most recent. Additionally, you can query the server to search for a particular individual. I am hired to explore the security vulnerabilities in the server and provide suggestions on how to patch up these issues. </p>
+
+	<h2>Methodology</h2>
+	<p> I first performed the attacks with the "black box" testing method. Then, I went through the source code to look for other vulnerabilities. Additionally, I used postman to make my post and get requests. </p>
+
+	<h2>Abstract of Findings</h2>
+	<p> Websites that allow user inputs are susceptible to security flaws if they don't provide proper input sanitation methods. If you allow users to input whatever they desire, they could use this opportunity to input malicious code that could make your server redirect you to another page and expose your privacy.</p>
+
+	<h2>Issues Found</h2>
+	<ul>
+	<li>Issue: Cross-site scripting</li>
+		<li>Location: Server home page (/get)</li>
+		<li>Severity of Issue: High - XSS poses high security risks because it could present users with fradulent web content and annoying messages. Instead of going to the user's intended website, the XSS attack could redirect the user to a malicious website.</li>
+		<li>Description of issue: Instead of inputting a legitimate username, I inputted the script "window.location='http://www.nyan.cat/'" instead. From now on, when I go to the homepage, instead of getting a list of people who checked in, I will be redirected to the nyan cat page. </li>
+		<li>Resolution: The user input should be stripped of special characters using .replace(/[^\w\s]/gi, ''); </li>
+		<div> <img src="alert.png" alt="Alert screenshot"> </div>
+		<div> <img src="alert_result.png" alt="Alert Result screenshot"> </div>
+
+	</ul>  
+
+	<ul>
+		<li>Issue: MongoDB Injection</li>
+		<li>Location: /checkins.json?login=query_phrase</li>
+		<li>Severity of Issue: High - MongoDB injection allows the user to gain more information than is allowed. For example, the user could use this attack method to find the location of all users who checked into the server. This is a security flaw because it reveals private information of all of the users to the attacker.  </li>
+		<li>Description of issue: When you are using the /checkins.json?login=query_phrase and insert [$ne] after the login, the server will return all of the users who checked into the server. The [$ne] means that the server will return all of the data where the username is not equal to query. </li>
+		<li>Resolution: One option is to use the <a href="https://zanon.io/posts/nosql-injection-in-mongodb">mongo-sanitize</a> middleware to strip out any keys that start with '$' so that the user can no longer us the $ne operator.</li>
+		<div> <img src="privacy.png" alt="Privacy screenshot"> </div>
+	</ul> 
+
+
+	<h2>References:</h2>
+	<ul>
+		<li>https://github.com/tuftsdev/WebProgramming/blob/gh-pages/examples/nodejs/nodemongoapp/server.js</li>
+		<li>https://zanon.io/posts/nosql-injection-in-mongodb</li>	
+	</ul> 
+
+
+
+	
+	
+</body>
+
+</html>
