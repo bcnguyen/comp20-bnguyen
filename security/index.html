@@ -19,12 +19,13 @@
 
 	<h2>Issues Found</h2>
 	<ul>
-	<li>Issue: Cross-site scripting</li>
-		<li>Location: Server home page (/get)</li>
-		<li>Severity of Issue: High - XSS poses high security risks because it could present users with fradulent web content and annoying messages. Instead of going to the user's intended website, the XSS attack could redirect the user to a malicious website.</li>
-		<li>Description of issue: Instead of inputting a legitimate username, I inputted the script "window.location='http://www.nyan.cat/'" instead. From now on, when I go to the homepage, instead of getting a list of people who checked in, I will be redirected to the nyan cat page. </li>
+	<li>Issue: Cross-site scripting - Alert</li>
+		<li>Location: Server home page (https://blooming-scrubland-34098.herokuapp.com) and HTTP Post</li>
+		<li>Severity of Issue: High - XSS poses high security risks because it could present users with fradulent web content and annoying messages. In this example, I used XSS to create an alert that will pop up each time you go to the homepage. Although this is only one method of XSS, hackers could use many other methods(like redirecting you to a malicious website through XSS) to harm you. </li>
+		<li>Description of issue: Instead of inputting a legitimate username, I inputted.
+		<div> <img src="alert_code.png" alt="Alert code screenshot"> </div>
+		 From now on, when you go to the homepage, an alert will appear.  </li>
 		<li>Resolution: The user input should be stripped of special characters using .replace(/[^\w\s]/gi, ''); </li>
-		<div> <img src="alert.png" alt="Alert screenshot"> </div>
 		<div> <img src="alert_result.png" alt="Alert Result screenshot"> </div>
 
 	</ul>  
@@ -32,12 +33,26 @@
 	<ul>
 		<li>Issue: MongoDB Injection</li>
 		<li>Location: /checkins.json?login=query_phrase</li>
-		<li>Severity of Issue: High - MongoDB injection allows the user to gain more information than is allowed. For example, the user could use this attack method to find the location of all users who checked into the server. This is a security flaw because it reveals private information of all of the users to the attacker.  </li>
-		<li>Description of issue: When you are using the /checkins.json?login=query_phrase and insert [$ne] after the login, the server will return all of the users who checked into the server. The [$ne] means that the server will return all of the data where the username is not equal to query. </li>
-		<li>Resolution: One option is to use the <a href="https://zanon.io/posts/nosql-injection-in-mongodb">mongo-sanitize</a> middleware to strip out any keys that start with '$' so that the user can no longer us the $ne operator.</li>
+		<li>Severity of Issue: High - MongoDB injection allows the user to gain more information than is allowed. For example, the user could use this attack method to find the location of all users who checked into the server. This is a security flaw because it reveals private information of all of the users to the attacker. </li>
+		<li>Description of issue: When you are using the /checkins.json?login=query_phrase and insert [$ne] after the login, the server will return all of the users who checked into the server. The [$ne] means that the server will return all of the data where the username is not equal to the query. </li>
+		<li>Resolution: One option is to use the <a href="https://zanon.io/posts/nosql-injection-in-mongodb">mongo-sanitize</a> middleware to strip out any keys that start with '$' so that the user can no longer use the $ne operator.</li>
 		<div> <img src="privacy.png" alt="Privacy screenshot"> </div>
 	</ul> 
 
+
+	<ul>
+	<li>Issue: Input Injection</li>
+		<li>Location: HTTP Post /sendLocation and Home page</li>
+		<li>Severity of Issue: High - This injection allows you to take advantage of the user input and change the html home page by using the style tag. This is dangerous because it allows the attacker to change your website to anything they want. In 2017, this is extremely relevent with fake news(see image below). If attackers could change the viewing content of your website, they could use your website's reputation to get to your audience.  </li>
+		<li>Description of issue: In this example, I used the following code: 
+		<div> <img src="style_code.png" alt="Style code screenshot"> </div>
+		By using the style tag, I was able to change the page's background. </li>
+		<li>Resolution: The user input should be stripped of special characters using .replace(/[^\w\s]/gi, ''); </li>
+		<div> <img src="style_result.png" alt="Style result screenshot"> </div>
+	</ul>
+
+	<h2>Conclusion:</h2>
+	<p>Whenever you allow user input, you have to think of all the possible corner cases where hackers could exploit your website. In these three examples, hackers could take advantage of the blooming-scrubland-34098 by injecting inputs that include symbols(something usernames, lat, and lng don't need). To fix these corner cases, you needed to strip the input of symbols. Another way to add an extra layer of security is to limit the user's input. For example, you can limit a user's login to 20 characters(not many people have names that long). </p>
 
 	<h2>References:</h2>
 	<ul>
